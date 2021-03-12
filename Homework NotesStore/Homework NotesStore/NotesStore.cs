@@ -6,81 +6,81 @@ namespace Homework_NotesStore
 {
     class NotesStore
     {
-         List<NotesStore> collectionOfNotes = new List<NotesStore>();
-        public string nameOfNote { get; set; }
-        public string stateOfNote { get; set; }
-        public DateTime timeForNote { get; set; }
+        List<Note> notes = new List<Note>();
+        public int Count { get => notes.Count; }
 
-        public NotesStore(string name, string state)
+        private int num;
+        public int ActiveNotes
         {
-            this.nameOfNote = name;
-            this.stateOfNote = state;
-           // this.collectionOfNotes = new List<NotesStore>();
+            get
+            {
+                return num;
+            }
+            set
+            {
+
+                value = 0;
+                for (int i = 0; i < Count; i++)
+                {
+                    if (notes[i].state == "active")
+                    {
+                        value++;
+                    }
+                }
+                num = value;
+            }
         }
-
-        public void AddNote(NotesStore note)
+        public int CompletedNotes
         {
-            bool TryAgain = true;
-            do
+            get
+            {
+                return num;
+            }
+            set
             {
 
-                string state;
-                string name;
-                Console.WriteLine("Please enter name and state of note.");
-                Console.WriteLine("The state for notes can be active, inactive and completed");
-                name = Console.ReadLine();
-                state = Console.ReadLine();
-
-                if (name == null || name == " ")
+                value = 0;
+                for (int i = 0; i < Count; i++)
                 {
-                    Console.WriteLine("Name can not be empty!");
+                    if (notes[i].state == "completed")
+                    {
+                        value++;
+                    }
                 }
-                else
-                {
-                    note.nameOfNote = name;
-                    TryAgain = false;
-                }
-                if (state != "completed" && state != "inactive" && state != "active")
-                {
-                    Console.WriteLine($"Invalid state {state}");
-                }
-                else
-                {
-                    note.stateOfNote = state;
-                    TryAgain = false;
-                }
-            } while (TryAgain == true);
-
-            note.timeForNote = DateTime.Now;
-            this.collectionOfNotes.Add(note);
+                num = value;
+            }
         }
-
-        public List<NotesStore> GetNotes(string state)
+        public void AddNote(string state, string name)
         {
-            bool TryAgain = false;
-            List<NotesStore> NameswithGivenState = new List<NotesStore>();
-            do
-            {
-                
-                if (state != "completed" && state != "inactive" && state != "active")
-                {
-                    Console.WriteLine($"Invalid state {state}");
-                    TryAgain = true;
-                }       
-                
-            } while (TryAgain == true);
+            Note note = new Note();
+            note.name = name;
+            note.state = state;
+            note.createdTime = DateTime.Now;
+            notes.Add(note);
 
-            for (int i = 0; i < collectionOfNotes.Count; i++)
+        }
+        public List<string> GetNotes(string state)
+        {
+            List<string> noteNames = new List<string>();
+            for (int i = 0; i < notes.Count; i++)
             {
-                if (collectionOfNotes[i].stateOfNote == state)
+                if (notes[i].state == state)
                 {
-                    NameswithGivenState.Add(collectionOfNotes[i]);
-                    Console.WriteLine(collectionOfNotes[i].nameOfNote);
+                    noteNames.Add(notes[i].name);
                 }
             }
-            
-            return NameswithGivenState;
+            return noteNames;
         }
+        public void DeleteNote(string name)
+        {
+            for (int i = 0; i < notes.Count; i++)
+            {
+                if (notes[i].name == name)
+                {
+                    notes.RemoveAt(i);
+                }
+            }
 
+        }
     }
 }
